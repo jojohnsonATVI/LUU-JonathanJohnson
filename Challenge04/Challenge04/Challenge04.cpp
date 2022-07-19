@@ -13,7 +13,7 @@ int main()
     }
     else {
         std::cout << input << " Has the following products: ";
-        //since there is no possible factor between half of the input and the input itself. Really, we could make this more efficient for very large numbers if we set it to input/n and set n to 2, and change it to 3 if we get past 2 in our count, and set n to 4 if we pass 3 in our loop without 
+        //since there is no possible factor between half of the input and the input itself, we don't have to run the loop through about half of the numbers between 1 and n. Really, we could make this more efficient for very large numbers if we set it the loop contraint to i <= sqrt(input) and catch the pairs as they appear, but this would require a vector or a stack which would be less efficient for memory... Depends on how much you want to cut down on iterations
         for (int i = 1; i <= input / 2; i++) {
             if (input % i == 0) {
                 std::cout << i << " ";
