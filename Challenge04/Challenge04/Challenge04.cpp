@@ -27,7 +27,7 @@ int main()
 
     }
     std::cout << input << " Has the following products: ";
-    /* Since there is no possible factor between half of inputand input, we can skip the last half of checks. 
+    /* Since there is no possible factor between half of input and the input, we can skip the last half of checks. 
     *  This could be sped up even more if we were to run the loop from 1 to sqrt of input and add the corresponding factor 
     *  greater than the sqrt(n) to a stack and pop them out after finishing the loop. Of course we'd have to add a check for
     *  if the sqrt(input) is one of the factors before popping the stack so we don't end up missing or duplicatibg the sqrt result.
