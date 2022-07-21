@@ -1,7 +1,7 @@
 
 
 #include <iostream>
-
+#include <stack>
 
 
 int main()
@@ -26,19 +26,21 @@ int main()
        
 
     }
-    std::cout << input << " Has the following products: ";
-    /* Since there is no possible factor between half of input and the input, we can skip the last half of checks. 
-    *  This could be sped up even more if we were to run the loop from 1 to sqrt of input and add the corresponding factor 
-    *  greater than the sqrt(n) to a stack and pop them out after finishing the loop. Of course we'd have to add a check for
-    *  if the sqrt(input) is one of the factors before popping the stack so we don't end up missing or duplicatibg the sqrt result.
-    *  I'm choosing not to implement this since it's unclear what the program's goals are for memory/speed O(n).
-    */
-
-        for (int i = 1; i <= input / 2; i++) {
+    std::cout << input << " Has the following factors: ";
+    std::stack<int> stack;
+    int sqrt = std::sqrt(input);
+    for (int i = 1; i < sqrt; i++) {
         if (input % i == 0) {
-            std::cout << i << " ";
+            stack.push(input / i);
+            std::cout << i << ' ';
         }
     }
-    //necessary addition since we're doing the half the input trick up above^^
-    std::cout << input;
+    if (sqrt * sqrt == input) {
+        std::cout << sqrt << ' ';
+    }
+    while (!stack.empty()) {
+        std::cout << stack.top() << ' ';
+        stack.pop();
+    }
+
 }
