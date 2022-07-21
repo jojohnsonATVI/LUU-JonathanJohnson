@@ -66,15 +66,34 @@ void PrintFactorsFull(int input) {
 
 int main()
 {
-   
-    clock_t tStart = clock();
-    for (int i = 1999900000; i < 2000000000; i++) {
-        PrintFactors(i);
-    }
-    printf("Time taken for Sqrt route: %.2fs\n", (double)(clock() - tStart) / CLOCKS_PER_SEC);
-    
-    return 0;
-    
+   /*
+    *clock_t tStart = clock();
+    *for (int i = 1999999900; i < 2000000000; i++) {
+    *    PrintFactors(i);
+    *}
+    *
+    *clock_t tStart2 = clock();
+    *for (int i = 1999999900; i < 2000000000; i++) {
+    *    PrintFactorsHalf(i);
+    *}
+    *
+    *clock_t tStart3 = clock();
+    *for (int i = 1999999900; i < 2000000000; i++) {
+    *    PrintFactorsFull(i);
+    *}
+    *printf("Time taken for Sqrt route: %.2fs\n", (double)(tStart2 - tStart) / CLOCKS_PER_SEC);
+    *printf("Time taken for half route: %.2fs\n", (double)(tStart3 - tStart2) / CLOCKS_PER_SEC);
+    *printf("Time taken for full route: %.2fs\n", (double)(clock() - tStart3) / CLOCKS_PER_SEC);
+    *
+    *return 0;
+    * 
+    * 
+    * Results:
+    * 
+    * Time taken for Sqrt route: 1.56s
+    * Time taken for half route: 134.25s
+    * Time taken for half route: 275.81s
+    */
 
     PrintFactors(getGoodInt());
    
