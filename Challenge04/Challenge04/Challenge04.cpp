@@ -92,11 +92,10 @@ int main()
     * 
     * Time taken for Sqrt route: 1.56s
     * Time taken for half route: 134.25s
-    * Time taken for full route: 275.81s
+    * Time taken for half route: 275.81s
     */
 
     PrintFactors(getGoodInt());
-
    
 
 }
