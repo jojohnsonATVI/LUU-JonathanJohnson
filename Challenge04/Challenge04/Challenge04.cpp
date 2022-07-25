@@ -3,6 +3,10 @@
 #include <iostream>
 #include <stack>
 #include <time.h>
+#include <limits>
+#include <ios>
+
+
 
 int getGoodInt() {
     std::cout << "Enter a positive number\n";
@@ -11,7 +15,7 @@ int getGoodInt() {
     while (true) {
         if (std::cin.fail()) {
             std::cin.clear();
-            std::cin.ignore(99, '\n');
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "A number wasn't entered. Please enter a positive number\n";
             std::cin >> input;
         }
