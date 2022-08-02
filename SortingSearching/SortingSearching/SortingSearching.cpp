@@ -9,7 +9,7 @@ struct Node {
     int pathSoFar = 0;
     Node* parentNode = nullptr;
     std::vector<Node*> connectedNodes;
-    std::vector<int> nodeCost;
+    std::vector<int> nodeCost; //Last two should probably be contained in a vector of one object that has pointers to nodes and edge cost as values
 };
 std::unordered_map<std::string, Node*> nodeMap;
 struct Data {
@@ -17,7 +17,7 @@ struct Data {
     std::string end;
     std::vector<Node*> nodeList;
 };
-//Useless here but implemented to show that I could actually implement A* logic. Also, isn't transfering information
+//Useless here but implemented to show that I could actually implement A* logic
 void FindPathEstimate(Node* node) {
     //Set pathEstimate to some estimate of the distance left to make it an acutal A* algorithm
     int distance = 0;
@@ -73,7 +73,14 @@ void BubbleSort(std::vector<Node*> array) {
         }
     }
 }
+void DeleteAllPointers(std::vector<Node*> list) {
+    for (int i = 0; i < list.size(); i++) {
+        delete list[i];
+        list[i] = nullptr;
+    }
+}
 void RunAStarSearch(Data* dataSet) {
+    std::vector<Node*> copyList = dataSet->nodeList;
     Node* nodeEnd = findNodeAddress(dataSet->end); //Uses Hashmap to find end node, same for next line, but start instead
     Node* node1 = findNodeAddress(dataSet->start);
     while (true) { //Finds Start value in node list
@@ -93,6 +100,7 @@ void RunAStarSearch(Data* dataSet) {
         BubbleSort(dataSet->nodeList);
     }
     std::cout << "The lowest cost possible to path between " << dataSet->start << " and " << dataSet->end << " is: " << dataSet->nodeList[0]->pathSoFar << '\n';
+    DeleteAllPointers(copyList);
 }
 void AddLink(Node* node1, Node* node2, int cost) {
     node1->connectedNodes.push_back(node2);
