@@ -23,7 +23,7 @@ void FindPathEstimate(Node* node) {
     int distance = 0;
     node->pathEstimate = distance + node->pathSoFar;
 }
-Node* findNodeAddress(std::string input) {
+Node* FindOrAddNodeAddress(std::string input) {
     Node* node;
     if (nodeMap.find(input) == nodeMap.end()) {
         node = new Node;
@@ -51,24 +51,22 @@ void CalculateConnections(Node* node) {
         }
     }
 }
-void BubbleSort(std::vector<Node*> array) {
-    bool flip = 1;
+void BubbleSort(std::vector<Node*> & array) {
+    bool flip = true;
     while (flip) {
-        flip = 0;
+        flip = false;
         for (unsigned int i = 0; i < array.size() - 1; i++) {
             if (array[i]->parentNode == nullptr && array[i + 1]->parentNode != nullptr) {
-                Node temp = *array[i];
+                Node* temp = array[i];
                 array[i] = array[i + 1];
-                array[i + 1] = &temp;
-                flip = 1;
+                array[i + 1] = temp;
+                flip = true;
             }
-            else if (array[i + 1]->parentNode == nullptr) {
-            }
-            else if (array[i]->pathEstimate > array[i + 1]->pathEstimate) {
-                Node temp = *array[i];
+            else if (array[i + 1]->parentNode != nullptr && array[i]->pathEstimate > array[i + 1]->pathEstimate) {
+                Node* temp = array[i];
                 array[i] = array[i + 1];
-                array[i + 1] = &temp;
-                flip = 1;
+                array[i + 1] = temp;
+                flip = true;
             }
         }
     }
@@ -81,11 +79,11 @@ void DeleteAllPointers(std::vector<Node*> list) {
 }
 void RunAStarSearch(Data* dataSet) {
     std::vector<Node*> copyList = dataSet->nodeList;
-    Node* nodeEnd = findNodeAddress(dataSet->end); //Uses Hashmap to find end node, same for next line, but start instead
-    Node* node1 = findNodeAddress(dataSet->start);
+    Node* nodeEnd = FindOrAddNodeAddress(dataSet->end); //Uses Hashmap to find end node, same for next line, but start instead
+    Node* nodeStart = FindOrAddNodeAddress(dataSet->start);
     while (true) { //Finds Start value in node list
         int i = 0;
-        if (dataSet->nodeList[i]->nodeName != node1->nodeName) {
+        if (dataSet->nodeList[i]->nodeName != nodeStart->nodeName) {
             i++;
             continue;
         }
@@ -100,7 +98,7 @@ void RunAStarSearch(Data* dataSet) {
         BubbleSort(dataSet->nodeList);
     }
     std::cout << "The lowest cost possible to path between " << dataSet->start << " and " << dataSet->end << " is: " << dataSet->nodeList[0]->pathSoFar << '\n';
-    DeleteAllPointers(copyList);
+    DeleteAllPointers(copyList); //Shouldn't be deleting here but oh well
 }
 void AddLink(Node* node1, Node* node2, int cost) {
     node1->connectedNodes.push_back(node2);
@@ -171,14 +169,14 @@ int main()
     std::cout << "\n\n\n\n\n";
     //Implement Searching stuff
     Data dataSet;
-    dataSet.nodeList.push_back(findNodeAddress("A"));
-    dataSet.nodeList.push_back(findNodeAddress("B"));
-    dataSet.nodeList.push_back(findNodeAddress("C"));
-    dataSet.nodeList.push_back(findNodeAddress("D"));
-    AddLink(dataSet.nodeList[0], dataSet.nodeList[1], 5);
-    AddLink(dataSet.nodeList[1], dataSet.nodeList[2], 1);
-    AddLink(dataSet.nodeList[0], dataSet.nodeList[3], 7);
-    AddLink(dataSet.nodeList[2], dataSet.nodeList[3], 1);
+    dataSet.nodeList.push_back(FindOrAddNodeAddress("A"));
+    dataSet.nodeList.push_back(FindOrAddNodeAddress("B"));
+    dataSet.nodeList.push_back(FindOrAddNodeAddress("C"));
+    dataSet.nodeList.push_back(FindOrAddNodeAddress("D"));
+    AddLink(FindOrAddNodeAddress("A"), FindOrAddNodeAddress("B"), 5);
+    AddLink(FindOrAddNodeAddress("B"), FindOrAddNodeAddress("C"), 1);
+    AddLink(FindOrAddNodeAddress("A"), FindOrAddNodeAddress("D"), 6);
+    AddLink(FindOrAddNodeAddress("C"), FindOrAddNodeAddress("D"), 1);
     dataSet.start = "A";
     dataSet.end = "D";
     RunAStarSearch(&dataSet);
