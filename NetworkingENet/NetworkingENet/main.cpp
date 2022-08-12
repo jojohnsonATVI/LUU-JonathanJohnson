@@ -5,7 +5,7 @@
 
 using namespace std;
 
-constexpr int MAX_NUMBER = 100;
+constexpr int MAX_NUMBER = 10;
 
 ENetHost* NetHost = nullptr;
 ENetPeer* Peer = nullptr;
@@ -43,7 +43,7 @@ struct WinPacket : public GamePacket
 
     WinPacket()
     {
-        Type = PHT_GUESS;
+        Type = PHT_WIN;
 
     }
 
@@ -134,14 +134,14 @@ void HandleReceivePacketServer(const ENetEvent& event, int randomNumber)
         {
             case PHT_GUESS:
             {
-                GuessPacket* gp = (GuessPacket*)(RecGamePacket);
-                std::cout << "The user guessed" << gp->m_guess << endl;
+                GuessPacket* gp = (GuessPacket*)(event.packet->data);
+                std::cout << "The user guessed " << gp->m_guess << endl;
                 if (gp->m_guess == randomNumber)
                 {
                     std::cout << "The user guessed correctly" << endl;
                     WinPacket* win = new WinPacket;
                     ENetPacket* packet = enet_packet_create(win,
-                        sizeof(win),
+                        sizeof(WinPacket),
                         ENET_PACKET_FLAG_RELIABLE);
                     BroadcastPacket(packet);
 
@@ -186,7 +186,6 @@ void HandleReceivePacketClient(const ENetEvent& event)
     GamePacket* RecGamePacket = (GamePacket*)(event.packet->data);
     if (RecGamePacket)
     {
-        std::cout << "Received Game Packet " << endl;
 
         switch (RecGamePacket->Type)
         {
@@ -194,20 +193,26 @@ void HandleReceivePacketClient(const ENetEvent& event)
             {
                 std::cout << "You have guessed correctly! Congratulations" << endl;
                 //TODO: END THE GAME on client
+                break;
             }
             case PHT_WRONG:
             {
-                std::cout << "You have guessed correctly incorrectly plese guess again" << endl;
-                getGoodInt();
-
+                std::cout << "You have guessed incorrectly, please guess again" << endl;
+                GuessPacket* guess = new GuessPacket(getGoodInt());
+                ENetPacket* packet = enet_packet_create(guess,
+                    sizeof(GuessPacket),
+                    ENET_PACKET_FLAG_RELIABLE);
+                BroadcastPacket(packet);
+                break;
 
             }
-
-            }
+        }
     }
     else
     {
         std::cout << "Invalid Packet " << endl;
+
+
     }
 
     /* Clean up the packet now that we're done using it. */
@@ -267,7 +272,7 @@ void ClientProcessPackets()
                     int guess = getGoodInt();
                     guessPacket = new GuessPacket(guess);
                     ENetPacket* packet = enet_packet_create(guessPacket,
-                        sizeof(guessPacket + 1),
+                        sizeof(GuessPacket),
                         ENET_PACKET_FLAG_RELIABLE);
                     BroadcastPacket(packet);
 
@@ -299,6 +304,7 @@ int main(int argc, char** argv)
     {
         srand(time(0));
         int randomNumber = (rand() % MAX_NUMBER) + 1;
+        cout << randomNumber << " is the target number\n";
         if (!CreateServer())
         {
             fprintf(stderr,
